@@ -1,0 +1,64 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model RicatGateway {
+  id Int @id @default(autoincrement())
+
+  node_id   Int
+  latitude  Float
+  longitude Float
+  rssi      Int
+  snr       Float
+
+  receivedAt   DateTime
+  beforeAPIHit DateTime
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model RicatNodeDebug {
+  id Int @id @default(autoincrement())
+
+  node_id Int
+
+  before_wifi_ntp_millis Int
+  after_wifi_ntp_millis  Int
+
+  before_gps_setup_epoch DateTime
+  data_gps_ready_epoch   DateTime
+  before_send_epoch      DateTime
+  after_send_epoch       DateTime
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model NandoNode {
+  id Int @id @default(autoincrement())
+
+  node_id    Int
+  gateway_id Int
+
+  temperature Float
+  humidity    Float
+  lux         Float
+  tips        Int
+
+  raw Bytes
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
