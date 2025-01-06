@@ -11,6 +11,7 @@ import RicatRoute from "@/routes/ricat";
 import NandoRoute from "@/routes/nando";
 
 const app = express();
+app.use(express.json());
 app.use(cors());
 
 // [Routes]
