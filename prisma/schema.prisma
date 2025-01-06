@@ -60,6 +60,9 @@ model NandoNode {
 
   raw Bytes
 
+  rssi Int
+  snr  Float
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

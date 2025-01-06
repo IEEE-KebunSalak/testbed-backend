@@ -12,6 +12,9 @@ type NandoNodeData = {
   tips: number;
 
   raw: string; // on base64 -> bytes
+
+  snr: number;
+  rssi: number;
 };
 
 const router = Router();
@@ -19,8 +22,17 @@ const router = Router();
 router.post(
   "/gateway",
   async (req: Request<{}, {}, NandoNodeData>, res: Response) => {
-    const { node_id, gateway_id, temperature, humidity, lux, tips, raw } =
-      req.body;
+    const {
+      node_id,
+      gateway_id,
+      temperature,
+      humidity,
+      lux,
+      tips,
+      raw,
+      snr,
+      rssi,
+    } = req.body;
 
     const gateway = await db.nandoNode.create({
       data: {
@@ -30,6 +42,8 @@ router.post(
         humidity,
         lux,
         tips,
+        snr,
+        rssi,
         raw: Buffer.from(raw, "base64"),
       },
     });
