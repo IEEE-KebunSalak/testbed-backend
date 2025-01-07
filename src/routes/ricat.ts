@@ -45,8 +45,8 @@ router.post(
         longitude,
         rssi,
         snr,
-        receivedAt: new Date(receivedAt),
-        beforeAPIHit: new Date(beforeAPIHit),
+        receivedAt: new Date(receivedAt * 1000),
+        beforeAPIHit: new Date(beforeAPIHit * 1000),
       },
     });
 
@@ -86,10 +86,10 @@ router.post(
         node_id,
         before_wifi_ntp_millis,
         after_wifi_ntp_millis,
-        before_gps_setup_epoch: new Date(before_gps_setup_epoch),
-        data_gps_ready_epoch: new Date(data_gps_ready_epoch),
-        before_send_epoch: new Date(before_send_epoch),
-        after_send_epoch: new Date(after_send_epoch),
+        before_gps_setup_epoch: new Date(before_gps_setup_epoch * 1000),
+        data_gps_ready_epoch: new Date(data_gps_ready_epoch * 1000),
+        before_send_epoch: new Date(before_send_epoch * 1000),
+        after_send_epoch: new Date(after_send_epoch * 1000),
       },
     });
 
