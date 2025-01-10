@@ -1,12 +1,16 @@
 import { Router, type Request, type Response } from "express";
 import db from "@/services/db";
 import { success } from "@/utils/response";
-const admin = require("firebase-admin");
+import admin from "firebase-admin";
+import firebase_service_key from "../../json/firebase_service_key.json";
 
-if(!admin.apps.length){
-  const serviceAccount = require("../firebase_service_key.json");
+if (!admin.apps.length) {
   admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount)
+    credential: admin.credential.cert({
+      clientEmail: firebase_service_key.client_email,
+      privateKey: firebase_service_key.private_key,
+      projectId: firebase_service_key.project_id,
+    }),
   });
 }
 
@@ -59,20 +63,18 @@ router.post(
     });
 
     const tokens = [
-      'c6SxJOfi95ic8fih4KI5YO:APA91bGsfbJnZOqYtw29doR8Ivx4vGRW88VmuU321MHrI9DG0BTFbSV8C--nJeDp_HLlBhZe16gMH89Y9bZRAL3gU_j0nF9H0VZcb7w88I6Wh6b35ZQPVxU',
-      'emTJp4HOW9Df9i4TMX-k5M:APA91bG_WUqcJy276WeSZyoMRjQAhMwkuU3x13B_XkeNsPQzFQVNGHhH_tQtNHLDk0XWF2Ez0z0wJgSKXAVKMGCH7smHei4nzFzFO86Wu8OiLcT-h_DAW00'
-    ]
+      "c6SxJOfi95ic8fih4KI5YO:APA91bGsfbJnZOqYtw29doR8Ivx4vGRW88VmuU321MHrI9DG0BTFbSV8C--nJeDp_HLlBhZe16gMH89Y9bZRAL3gU_j0nF9H0VZcb7w88I6Wh6b35ZQPVxU", //
+      "emTJp4HOW9Df9i4TMX-k5M:APA91bG_WUqcJy276WeSZyoMRjQAhMwkuU3x13B_XkeNsPQzFQVNGHhH_tQtNHLDk0XWF2Ez0z0wJgSKXAVKMGCH7smHei4nzFzFO86Wu8OiLcT-h_DAW00", //
+    ];
 
-    const message = {
-      tokens: tokens,
+    const beforeSendNotification = new Date().toISOString();
+    await admin.messaging().sendEachForMulticast({
+      tokens,
       notification: {
         title: "Node Alert",
         body: `Node ${node_id} is at longitude: ${longitude}, latitude: ${latitude}`,
-      }
-    };
-
-    const beforeSendNotification = new Date().toISOString();
-    await admin.messaging().send(message);
+      },
+    });
     const afterSendNotification = new Date().toISOString();
 
     const backendDebug = await db.backendDebug.create({
@@ -82,8 +84,8 @@ router.post(
         longitude,
         rssi,
         snr,
-        beforeSendNotification: new Date(beforeSendNotification),
-        afterSendNotification: new Date(afterSendNotification),
+        before_send_notification: beforeSendNotification,
+        after_send_notification: afterSendNotification,
       },
     });
 
