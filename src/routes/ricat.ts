@@ -2,15 +2,13 @@ import { Router, type Request, type Response } from "express";
 import db from "@/services/db";
 import { success } from "@/utils/response";
 import admin from "firebase-admin";
-import firebase_service_key from "../../json/firebase_service_key.json";
+import path from "path";
 
 if (!admin.apps.length) {
   admin.initializeApp({
-    credential: admin.credential.cert({
-      clientEmail: firebase_service_key.client_email,
-      privateKey: firebase_service_key.private_key,
-      projectId: firebase_service_key.project_id,
-    }),
+    credential: admin.credential.cert(
+      path.join(__dirname, "../../json/firebase_service_key.json")
+    ),
   });
 }
 
